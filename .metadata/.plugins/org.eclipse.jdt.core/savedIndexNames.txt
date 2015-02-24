@@ -1,5 +1,3 @@
 INDEX VERSION 1.126+C:\Users\stephen\Desktop\spring2015\elec 419\wound_analysis\.metadata\.plugins\org.eclipse.jdt.core
-1989308834.index
-1432238713.index
 1284074322.index
 2109130915.index
