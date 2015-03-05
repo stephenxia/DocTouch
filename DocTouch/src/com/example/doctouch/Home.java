@@ -3,7 +3,6 @@ package com.example.doctouch;
 import com.example.videoSession.VideoSessionActivity;
 
 import android.support.v4.app.FragmentActivity;
-import android.support.v7.app.ActionBarActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -13,12 +12,12 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 
 
-public class MainActivity extends FragmentActivity implements OnClickListener {
+public class Home extends FragmentActivity implements OnClickListener {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.home);
         
         Button takeVideo = (Button) findViewById(R.id.video_session);
 		takeVideo.setOnClickListener(this);
