@@ -7,6 +7,7 @@
     <TextView
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
+        android:textSize="30dp"
         android:text="@string/begin_video_session_prompt" />
     
      <LinearLayout
@@ -17,11 +18,18 @@
         android:orientation="horizontal" >
         
         <Button
-            android:id="@+id/take_video_session"
+            android:id="@+id/request_take_video_session"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="33"
             android:text="@string/take_video"
+            android:textSize="13sp" />
+        <Button
+            android:id="@+id/request_pick_video"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="33"
+            android:text="@string/Review_videos_to_send"
             android:textSize="13sp" />
         
     </LinearLayout>

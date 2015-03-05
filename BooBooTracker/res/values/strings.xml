@@ -8,5 +8,6 @@
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
     <string name="take_video">Take Video</string>
+    <string name="Review_videos_to_send">Review Videos to Send</string>
 
 </resources>

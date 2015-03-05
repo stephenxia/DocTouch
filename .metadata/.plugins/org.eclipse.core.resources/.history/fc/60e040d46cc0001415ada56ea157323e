@@ -1,0 +1,43 @@
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+    
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:textSize="30dp"
+        android:text="@string/begin_video_session_prompt" />
+    
+     <LinearLayout
+        android:id="@+id/bottom_pane"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="0"
+        android:orientation="horizontal" >
+        
+        <Button
+            android:id="@+id/take_video_session"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="33"
+            android:text="@string/take_video"
+            android:textSize="13sp" />
+        <Button
+            android:id="@+id/choose_video"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="33"
+            android:text="@string/take_video"
+            android:textSize="13sp" />
+        
+    </LinearLayout>
+
+     <VideoView
+         android:id="@+id/video_view"
+         android:layout_width="match_parent"
+         android:layout_height="match_parent"
+         android:visibility="invisible" />
+
+</LinearLayout>
