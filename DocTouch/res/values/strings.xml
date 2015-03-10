@@ -14,5 +14,6 @@
     <string name="action_settings">Settings</string>
     <string name="take_video">Take Video</string>
     <string name="Review_videos_to_send">Review Videos to Send</string>
+    <string name="check_for_new_updates">Check For New Updates</string>
 
 </resources>

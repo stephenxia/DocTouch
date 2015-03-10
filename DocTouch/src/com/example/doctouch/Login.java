@@ -51,6 +51,7 @@ public class Login extends Activity implements OnClickListener{
     //JSON element ids from repsonse of php script:
     private static final String TAG_SUCCESS = "success";
     private static final String TAG_MESSAGE = "message";
+    private static final String TAG_MED = "med_prof";
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -131,7 +132,17 @@ public class Login extends Activity implements OnClickListener{
                 success = json.getInt(TAG_SUCCESS);
                 if (success == 1) {
                 	Log.d("Login Successful!", json.toString());
-                	Intent i = new Intent(Login.this, Home.class);
+                	Intent i = null;
+                	
+                	// Start doctor's home page if is a medical professional.
+                	if(json.getString(TAG_MED).equals(ServerInformation.IS_MED_PROF.toString())) {
+                		i = new Intent(Login.this, HomeD.class);
+                	}
+                	
+                	// Otherwise, start patient's home page.
+                	else {
+                		i = new Intent(Login.this, Home.class);
+                	}
                 	finish();
     				startActivity(i);
                 	return json.getString(TAG_MESSAGE);

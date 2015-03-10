@@ -37,6 +37,10 @@
             android:label="@string/app_name" >
         </activity>
         <activity
+            android:name="com.example.doctouch.HomeD"
+            android:label="@string/app_name" >
+        </activity>
+        <activity
             android:name="com.example.videoSession.VideoSessionActivity"
             android:label="@string/app_name" >
         </activity>
