@@ -114,11 +114,11 @@ public class VideoSessionActivity extends FragmentActivity implements OnClickLis
 			
 			// If video capture was successful
 			if(resultCode == RESULT_OK) {
-				// Scan file to make it appear to the user.
-				//context.sendBroadcast(new Intent(Intent.ACTION_MEDIA_MOUNTED, Uri.fromFile(mediaStorageDir)));
 				
 				// Scan file to make it appear to the user.
-	            // MediaScannerConnection.scanFile(VideoSessionActivity.this, new String[] {getAbsPathFromURI(VideoSessionActivity.this, fileUri)}, null, null);
+				String savedFilePath = getAbsPathFromURI(VideoSessionActivity.this, fileUri);
+				Log.d("Saved Video", savedFilePath);
+	            MediaScannerConnection.scanFile(VideoSessionActivity.this, new String[] {getAbsPathFromURI(VideoSessionActivity.this, fileUri)}, null, null);
 			}
 			
 			// Otherwise, just begin the recording session again.
@@ -249,17 +249,28 @@ public class VideoSessionActivity extends FragmentActivity implements OnClickLis
 	 */
 	public String getAbsPathFromURI(Context context, Uri contentUri) {
 		Cursor cursor = null;
+		String filePath = "";
 		try { 
 			String[] proj = { MediaStore.Images.Media.DATA };
 		    cursor = context.getContentResolver().query(contentUri,  proj, null, null, null);
-		    int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
-		    cursor.moveToFirst();
-		    return cursor.getString(column_index);
+		    
+		    // Source is not a local file.
+		    if(cursor != null) {
+		    	int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+		    	cursor.moveToFirst();
+		    	filePath = cursor.getString(column_index);
+		    }
+		    
+		    // Source is a local file.
+		    else {
+		    	filePath = contentUri.getPath();
+		    }
 		} finally {
 			if (cursor != null) {
 		      cursor.close();
 		    }
 		}
+		return filePath;
 	}
 	
 	class uploadMedia extends AsyncTask<String, Void, String> {

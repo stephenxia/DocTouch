@@ -4,11 +4,12 @@
 package com.example.server;
 
 public enum ServerInformation {
-	LOGIN_URL("http://10.119.77.64:80/webservice/login.php"),
-	REGISTER_URL("http://10.119.77.64:80/webservice/register.php"),
-	STORAGE_FRONT_END_URL("http://10.119.77.64:80/storage/randomPost.php"),
-	STORAGE_URL("http://10.119.77.64:80/storage/"),
-	REQUEST_URL("http://10.119.77.64:80/storage/requestFiles.php"),
+	SERVER_IP("10.127.79.48"),
+	LOGIN_URL("http://" + SERVER_IP + "/webservice/login.php"),
+	REGISTER_URL("http://" + SERVER_IP + "/webservice/register.php"),
+	STORAGE_FRONT_END_URL("http://" + SERVER_IP + "/storage/randomPost.php"),
+	STORAGE_URL("http://" + SERVER_IP + "/storage/"),
+	REQUEST_URL("http://" + SERVER_IP + "/storage/requestFiles.php"),
 	IS_MED_PROF("1"),
 	NOT_MED_PROF("0");
 	
