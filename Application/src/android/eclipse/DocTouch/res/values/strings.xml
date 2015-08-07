@@ -13,7 +13,18 @@
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
     <string name="take_video">Take Video</string>
-    <string name="Review_videos_to_send">Review Videos to Send</string>
+    <string name="review_videos_to_send">Review Videos to Send</string>
+    <string name="review_videos">Review Videos</string>
     <string name="check_for_new_updates">Check For New Updates</string>
+    <string name="capture_video_image">Capture Video Image</string>
+    
+    <!-- EditImageActivity Strings -->
+    <string name="brush">Brush</string>
+    <string name="erase">Erase</string>
+    <string name="save">Save</string>
+    <string name="paint">Paint</string>
+    <string name="small">Small</string>
+	<string name="medium">Medium</string>
+	<string name="large">Large</string>
 
 </resources>

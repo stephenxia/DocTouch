@@ -10,13 +10,15 @@
     
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     
     <uses-feature android:name="android.hardware.camera"
                   android:required="true" />
 
     <application
         android:allowBackup="true"
-        android:icon="@drawable/ic_launcher"
+        android:icon="@drawable/logo"
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
         <activity 
@@ -28,6 +30,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        
+        <!-- Login, Register, and Home Activities -->
         <activity
             android:name="com.example.doctouch.Register"
             android:label="@string/app_name" >
@@ -40,8 +44,25 @@
             android:name="com.example.doctouch.HomeD"
             android:label="@string/app_name" >
         </activity>
+        
+        <!-- Obtain Media Activities -->
         <activity
             android:name="com.example.videoSession.VideoSessionActivity"
+            android:label="@string/app_name" >
+        </activity>
+        
+        <!-- Display Media Activities -->
+        <activity
+            android:name="com.example.fileChooser.FileChooserActivity"
+            android:label="@string/app_name" >
+        </activity>
+        <activity
+            android:name="com.example.media.MPlayer"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:label="@string/app_name" >
+        </activity>
+        <activity
+            android:name="com.example.media.EditImageActivity"
             android:label="@string/app_name" >
         </activity>
     </application>

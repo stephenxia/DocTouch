@@ -9,7 +9,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.example.JSON.JSONParser;
-import com.example.server.ServerInformation;
+import com.example.constants.ServerInformation;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
@@ -51,7 +51,7 @@ public class Login extends Activity implements OnClickListener{
     //JSON element ids from repsonse of php script:
     private static final String TAG_SUCCESS = "success";
     private static final String TAG_MESSAGE = "message";
-    private static final String TAG_MED = "med_prof";
+    private static final String TAG_MED = ServerInformation.MED_PROF.toString();
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {

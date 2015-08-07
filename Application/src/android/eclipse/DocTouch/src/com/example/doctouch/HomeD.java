@@ -16,7 +16,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.example.JSON.JSONParser;
-import com.example.server.ServerInformation;
+import com.example.constants.MediaConst;
+import com.example.constants.ServerInformation;
+import com.example.fileChooser.FileChooserActivity;
 import com.example.videoSession.VideoSessionActivity;
 
 import android.support.v4.app.FragmentActivity;
@@ -47,6 +49,9 @@ public class HomeD extends FragmentActivity implements OnClickListener {
         
         Button checkForUpdates = (Button) findViewById(R.id.check_for_new_updates);
 		checkForUpdates.setOnClickListener(this);
+		
+		Button reviewVideos = (Button) findViewById(R.id.review_videos);
+		reviewVideos.setOnClickListener(this);
     }
 
 
@@ -77,6 +82,13 @@ public class HomeD extends FragmentActivity implements OnClickListener {
 		if(v.getId() == R.id.check_for_new_updates) {
 			new checkForUpdates().execute();
 		}
+		else if(v.getId() == R.id.review_videos) {
+			Intent reviewIntent = new Intent(HomeD.this, FileChooserActivity.class);
+			Bundle extras = new Bundle();
+			extras.putString(ServerInformation.MED_PROF.toString(), ServerInformation.IS_MED_PROF.toString());
+			reviewIntent.putExtras(extras);
+			startActivity(reviewIntent);
+		}
 	}
 	
 	class checkForUpdates extends AsyncTask<String, String, String> {
@@ -87,10 +99,8 @@ public class HomeD extends FragmentActivity implements OnClickListener {
 		boolean failure = false;
 		ProgressDialog pDialog;
 		
-		static final String appName = "DocTouch";
-		
 		// Initialize internal storage directory
-        final File mediaStorageDir = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), appName);
+        final File mediaStorageDir = new File(MediaConst.MEDIA_DIR.toString());
 
        @Override
        protected void onPreExecute() {
@@ -163,9 +173,9 @@ public class HomeD extends FragmentActivity implements OnClickListener {
     	   int totalSize = 0;
     	   
     	   // Create the storage directory if it does not exist
-   	       if (! mediaStorageDir.exists()){
-   	           if (! mediaStorageDir.mkdirs()){
-   	               Log.d(appName, "failed to create directory");
+   	       if (!mediaStorageDir.exists()){
+   	           if (!mediaStorageDir.mkdirs()){
+   	               Log.d(MediaConst.APP_NAME.toString(), "failed to create directory");
    	           }
    	       }
    	       

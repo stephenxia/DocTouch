@@ -34,7 +34,9 @@ import com.example.doctouch.Home;
 import com.example.doctouch.HomeD;
 import com.example.doctouch.Login;
 import com.example.doctouch.R;
-import com.example.server.ServerInformation;
+import com.example.fileChooser.FileChooserActivity;
+import com.example.constants.MediaConst;
+import com.example.constants.ServerInformation;
 
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
@@ -48,6 +50,7 @@ import android.net.http.AndroidHttpClient;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
 import android.provider.MediaStore;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
@@ -60,8 +63,8 @@ import android.widget.VideoView;
 public class VideoSessionActivity extends FragmentActivity implements OnClickListener{
 	
 	// Activity codes.
-	static final int REQUEST_TAKE_VIDEO_SESSION = 1;
-	static final int REQUEST_PICK_VIDEO = 2;
+	private static final int REQUEST_TAKE_VIDEO_SESSION = 1;
+	private static final int REQUEST_PICK_VIDEO = 2;
 	
     // JSON element ids from repsonse of php script:
     private static final String TAG_SUCCESS = "success";
@@ -96,9 +99,9 @@ public class VideoSessionActivity extends FragmentActivity implements OnClickLis
         context = this;
         
         // Initialize internal storage directory
-        mediaStorageDir = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), appName);
+        mediaStorageDir = new File(MediaConst.MEDIA_DIR.toString());
         
-        mVideoView = (VideoView) findViewById(R.id.video_view);
+        //mVideoView = (VideoView) findViewById(R.id.video_view);
         
         Button takeVideo = (Button) findViewById(R.id.request_take_video_session);
 		takeVideo.setOnClickListener(this);
@@ -115,10 +118,31 @@ public class VideoSessionActivity extends FragmentActivity implements OnClickLis
 			// If video capture was successful
 			if(resultCode == RESULT_OK) {
 				
-				// Scan file to make it appear to the user.
-				String savedFilePath = getAbsPathFromURI(VideoSessionActivity.this, fileUri);
+				// Get File and upload to server.
+				final String savedFilePath = getAbsPathFromURI(VideoSessionActivity.this, fileUri);
+				
+				// Upload to server
 				Log.d("Saved Video", savedFilePath);
-	            MediaScannerConnection.scanFile(VideoSessionActivity.this, new String[] {getAbsPathFromURI(VideoSessionActivity.this, fileUri)}, null, null);
+				if(savedFilePath != null) {
+					new Thread(new Runnable() {
+						public void run() {
+							fileUpload(savedFilePath);
+							
+							// Delete file.
+							File savedFile = new File(savedFilePath);
+							Log.d("File: ", "Removing file from device.");
+							if(!savedFile.delete()) {
+								Log.d("Error: ", "File not removed from device");
+							}
+						}
+					}).start();
+				}
+				else {
+					Log.d("Error: ", "File path not found.");
+					Toast.makeText(VideoSessionActivity.this, "Error: File path not found.", Toast.LENGTH_SHORT).show();
+				}
+				
+	            //MediaScannerConnection.scanFile(VideoSessionActivity.this, new String[] {getAbsPathFromURI(VideoSessionActivity.this, fileUri)}, null, null);
 			}
 			
 			// Otherwise, just begin the recording session again.
@@ -146,12 +170,19 @@ public class VideoSessionActivity extends FragmentActivity implements OnClickLis
 		// For now, just send the video to storage.
 		case REQUEST_PICK_VIDEO:
 			if(resultCode == RESULT_OK) {
-				final String filePath = getAbsPathFromURI(VideoSessionActivity.this, data.getData());
-				new Thread(new Runnable() {
-					public void run() {
-						fileUpload(filePath);
-					}
-				}).start();
+				Bundle extras = data.getExtras();
+				final String filePath = extras.getString(MediaConst.FILEPATH.toString());
+				if(filePath != null) {
+					new Thread(new Runnable() {
+						public void run() {
+							fileUpload(filePath);
+						}
+					}).start();
+				}
+				else {
+					Log.d("Error: ", "File path not found.");
+					Toast.makeText(VideoSessionActivity.this, "Error: File path not found.", Toast.LENGTH_SHORT).show();
+				}
 			}
 		}
 	}
@@ -194,7 +225,10 @@ public class VideoSessionActivity extends FragmentActivity implements OnClickLis
 	 */
 	public void beginVideoGallery() {
 		
-		Intent videoChooseIntent = new Intent(Intent.ACTION_PICK, MediaStore.Video.Media.EXTERNAL_CONTENT_URI);
+		Intent videoChooseIntent = new Intent(VideoSessionActivity.this, FileChooserActivity.class);
+		Bundle extras = new Bundle();
+		extras.putString(ServerInformation.MED_PROF.toString(), ServerInformation.NOT_MED_PROF.toString());
+		videoChooseIntent.putExtras(extras);
 		
 		//Intent videoChooseIntent = new Intent(Intent.ACTION_GET_CONTENT);
 		//videoChooseIntent.setType("video/*");
@@ -361,8 +395,14 @@ public class VideoSessionActivity extends FragmentActivity implements OnClickLis
         int maxBufferSize = 1024;
         String urlString = ServerInformation.STORAGE_FRONT_END_URL.toString();
         
-        //ProgressDialog dialog = ProgressDialog.show(VideoSessionActivity.this, "", "Uploading file...", true);
+        // Display Messages
+        VideoSessionActivity.this.runOnUiThread(new Runnable() {
+            public void run() {
+                Toast.makeText(VideoSessionActivity.this, "Sending...", Toast.LENGTH_SHORT).show();
+            }
+        });
         
+        //ProgressDialog dialog = ProgressDialog.show(VideoSessionActivity.this, "", "Uploading file...", true);
         try {
         	//------------------ CLIENT REQUEST
         	FileInputStream fileInputStream = new FileInputStream(new File(path));
@@ -372,6 +412,7 @@ public class VideoSessionActivity extends FragmentActivity implements OnClickLis
          
         	// Open a HTTP connection to the URL
         	conn = (HttpURLConnection) url.openConnection();
+        	Log.d("Connection Established: ", urlString);
          
         	// Allow Inputs
         	conn.setDoInput(true);
@@ -381,6 +422,12 @@ public class VideoSessionActivity extends FragmentActivity implements OnClickLis
          
         	// Don't use a cached copy.
         	conn.setUseCaches(false);
+        	
+        	// Allow all inputs and outputs and allow data chunking.
+        	conn.setDoInput(true);
+        	conn.setDoOutput(true);
+        	conn.setUseCaches(false);
+        	conn.setChunkedStreamingMode(1024);
         	
         	// Use a post method.
         	conn.setRequestMethod("POST");
@@ -397,6 +444,7 @@ public class VideoSessionActivity extends FragmentActivity implements OnClickLis
         	buffer = new byte[bufferSize];
          
         	// read file and write it into form...
+        	Log.d("File Uploading: ", "Writing " + path + " to " + urlString);
         	bytesRead = fileInputStream.read(buffer, 0, bufferSize);
         	while (bytesRead > 0) {
         		dos.write(buffer, 0, bufferSize);
@@ -418,10 +466,20 @@ public class VideoSessionActivity extends FragmentActivity implements OnClickLis
         catch (MalformedURLException ex) {
         	//dialog.dismiss();
         	Log.e("Debug", "error: " + ex.getMessage(), ex);
+        	VideoSessionActivity.this.runOnUiThread(new Runnable() {
+                public void run() {
+                    Toast.makeText(VideoSessionActivity.this, "Error writing file to server.", Toast.LENGTH_SHORT).show();
+                }
+            });
         }
         catch (IOException ioe) {
         	//dialog.dismiss();
         	Log.e("Debug", "error: " + ioe.getMessage(), ioe);
+        	VideoSessionActivity.this.runOnUiThread(new Runnable() {
+                public void run() {
+                    Toast.makeText(VideoSessionActivity.this, "Error writing file to server.", Toast.LENGTH_SHORT).show();
+                }
+            });
         }
         
         //------------------ read the SERVER RESPONSE
@@ -437,7 +495,14 @@ public class VideoSessionActivity extends FragmentActivity implements OnClickLis
         catch (IOException ioex) {
         	//dialog.dismiss();
             Log.e("Debug", "error: " + ioex.getMessage(), ioex);
+            Toast.makeText(VideoSessionActivity.this, "Error reading server response.", Toast.LENGTH_SHORT).show();
         }
+        
+        VideoSessionActivity.this.runOnUiThread(new Runnable() {
+            public void run() {
+                Toast.makeText(VideoSessionActivity.this, MediaConst.MEDIA_SENT.toString(), Toast.LENGTH_SHORT).show();
+            }
+        });
         //dialog.dismiss();
     }
 	

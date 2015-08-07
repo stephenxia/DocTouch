@@ -9,7 +9,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.example.JSON.JSONParser;
-import com.example.server.ServerInformation;
+import com.example.constants.ServerInformation;
 
 import android.app.Activity;
 import android.app.ProgressDialog;

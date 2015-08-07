@@ -29,15 +29,8 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="33"
-            android:text="@string/Review_videos_to_send"
+            android:text="@string/review_videos_to_send"
             android:textSize="13sp" />
         
     </LinearLayout>
-
-     <VideoView
-         android:id="@+id/video_view"
-         android:layout_width="match_parent"
-         android:layout_height="match_parent"
-         android:visibility="invisible" />
-
 </LinearLayout>
